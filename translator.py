@@ -23,14 +23,15 @@ class Translator:
             i = i.strip()
             parola_aliena = i.split()[0]
             parola_italiana = i.split()[1]
-            self.dizionarioParole.addWord(parola_aliena, parola_italiana, False)
+            parole_italiane = []
+            parole_italiane.append(parola_italiana)
+            self.dizionarioParole.addWord(parola_aliena, parole_italiane, False)
 
 
     def handleAdd(self, entry):
         # entry is a tuple <parola_aliena> <traduzione1 traduzione2 ...>
         lista = entry.split()
         parola_aliena = lista[0]
-
         parole_italiane = []
         for i in range(len(lista)):
             if i != 0:
@@ -47,7 +48,8 @@ class Translator:
 
     def handleWildCard(self,query):
         # query is a string with a ? --> <par?la_aliena>
-        pass
+        return self.dizionarioParole.translateWordWildCard(query)
+
     def stampa_dizionario(self):
         return self.dizionarioParole.__repr__()
 
@@ -58,11 +60,19 @@ class Translator:
                 if self.controlla_parola(parola) == False:
                     return False
         return True
-
     def controlla_parola(self, parola):
         for lettera in parola:
             if lettera < "a" or lettera > "z":
                 return False
+        return True
+    def controlla_parola_wildcard(self, parola):
+        lista_parola = parola.split("?")
+        for sezione in lista_parola:
+            if len(lista_parola) > 2 :
+                return False
+            for lettera in sezione:
+                if lettera < "a" or lettera > "z":
+                    return False
         return True
     def parola_gia_salvata(self, parola_aliena):
         for parola in self.dizionarioParole.dizionarioParole.keys():
