@@ -27,6 +27,8 @@ class Dictionary:
         parole_accettabili = self.cerca_parole_simili(parola_pulita_incompleta)
         risultato = ""
         for parola_aliena in parole_accettabili:
+            if risultato != "":
+                risultato += ", "
             risultato += self.translate(parola_aliena)
         return risultato
 
@@ -38,6 +40,11 @@ class Dictionary:
             risultato += parola
         return risultato
     def restituisci_parola_wildcard(self, parola_punto_interrogativo):
+        """
+        restituisce la parola in input senza il punto interrogativo
+        :param parola_punto_interrogativo: parola con un punto interrogativo al posto di una lettera
+        :return: parola in input senza una lettera (c'era un punto interrogativo)
+        """
         lista_parola = parola_punto_interrogativo.split("?")
         parola_pulita = ""
         for sezione in lista_parola:
@@ -45,22 +52,23 @@ class Dictionary:
                 parola_pulita += lettera
         return parola_pulita
     def cerca_parole_simili(self, parola_incompleta):
+        """
+        Data una parola che manca di una lettera restituisce una lista di parole simili
+        :param parola_incompleta: parola senza una lettera
+        :return: una lista di possibili parole che sostituiscano la parola in input
+        """
         parole_accettabili = []
         for chiave in self.dizionarioParole.keys():
             if (len(chiave) - 1) == len(parola_incompleta):
                 contatore = 0
-                for i in range(len(chiave)):
-                    if i < len(parola_incompleta):
-
-
-
-
-
-                        if chiave[i] == parola_incompleta[i]:
+                lettere_chiave = list(chiave)
+                lettere_incompleta = list(parola_incompleta)
+                for i in lettere_chiave:
+                    for j in lettere_incompleta:
+                        if i == j:
                             contatore += 1
-                    else:                                               ## ultima lettera
-                        if chiave[i] == parola_incompleta[len(parola_incompleta) - 1]:
-                            contatore += 1
-                if contatore == len(parola_incompleta) - 1:
+                            lettere_incompleta.remove(j)
+                            break
+                if contatore == len(parola_incompleta):     ## se ho ogni lettera della parola imcompleta uguale ad almeno una lettera di una delle chiavi
                     parole_accettabili.append(chiave)
         return parole_accettabili
